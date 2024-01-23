@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
+	"path/filepath"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -45,7 +47,22 @@ func main() {
 	b, err := bindings.NewBinding("postgres")
 	if err != nil {
 		log.Printf("Error while getting bindings: %s\n", err.Error())
+	} else {
+		err := filepath.Walk("/bindings", func(bpath string, info fs.FileInfo, err error) error {
+			if info.IsDir() {
+				log.Printf(" -> %v id dir", bpath)
+			} else {
+				if !info.IsDir() {
+					log.Printf(" -> %v is file", bpath)
+				}
+			}
+			return nil
+		})
+		if err != nil {
+			fmt.Printf("walk error [%v]\n", err)
+		}
 	}
+
 	copier.Copy(&cfg.Database, &b)
 
 	fmt.Printf("DB config: %v", &cfg.Database)
