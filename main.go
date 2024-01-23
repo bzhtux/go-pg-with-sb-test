@@ -101,7 +101,7 @@ func main() {
 		}
 
 		// Ensure entry doesn't exist yet
-		entry := conn.Where("Title = ?", newbook.Title)
+		entry := conn.Where("Title = ?", newbook.Title).First(&newbook)
 		log.Printf("entry.Error: %v", entry.Error)
 		if entry.RowsAffected != 0 {
 			log.Printf("Book %s already exists in DB", newbook.Title)
