@@ -127,7 +127,7 @@ func main() {
 		}
 
 		// Ensure entry doesn't exist yet
-		entry2 := conn.Where("Title = ?", newbook2.Title)
+		entry2 := conn.Where("Title = ?", newbook2.Title).First(&newbook2)
 		log.Printf("entry.Error: %v", entry2.Error)
 		if entry2.RowsAffected != 0 {
 			log.Printf("Book %s already exists in DB", newbook2.Title)
@@ -180,7 +180,7 @@ func main() {
 	router.GET("/clean/:id", func(c *gin.Context) {
 		bookID := c.Params.ByName("id")
 		var book = Book{}
-		r := conn.Where("ID = ?", bookID).First(&book)
+		r := conn.Where("ID = ?", bookID)
 		if r.RowsAffected == 0 {
 			log.Printf("No book found with ID %v", bookID)
 			c.JSON(http.StatusNotFound, gin.H{
