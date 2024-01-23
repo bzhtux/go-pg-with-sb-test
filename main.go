@@ -11,7 +11,6 @@ import (
 
 	bindings "github.com/bzhtux/servicebinding"
 	"github.com/jinzhu/copier"
-	// "github.com/bzhtux/servicebinding/bindings"
 )
 
 type Config struct {
@@ -44,6 +43,7 @@ type Books struct {
 
 func main() {
 	cfg := Config{}
+	// Debug output for servicebinding pkg
 	b, err := bindings.NewBinding("postgres")
 	if err != nil {
 		log.Printf("Error while getting bindings: %s\n", err.Error())
@@ -67,6 +67,7 @@ func main() {
 
 	fmt.Printf("DB config: %v", &cfg.Database)
 
+	// Setup new DB connection
 	var dsn = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable password=%s", cfg.Database.Host, cfg.Database.Port, cfg.Database.Username, cfg.Database.Database, cfg.Database.Password)
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -75,5 +76,20 @@ func main() {
 	}
 
 	fmt.Printf("DBConn: %v", conn)
-	// conn.Automigrate(B&ooks{})
+	conn.AutoMigrate(&Books{})
+
+	// New DB entry
+	newbook := Books{
+		Title:  "The Hitchhiker's Guide to the Galaxy",
+		Author: "Douglas Adams",
+	}
+
+	// Ensure entry doesn't exist yet
+	entry := conn.Where("Title = ?", newbook.Title)
+	if entry.RowsAffected != 0 {
+		log.Printf("Book %s already exists in DB", newbook.Title)
+	} else {
+		conn.Create(&newbook)
+		log.Printf("New book %s by %s has been recorded in DB", newbook.Title, newbook.Author)
+	}
 }
