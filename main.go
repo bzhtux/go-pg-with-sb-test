@@ -78,7 +78,10 @@ func main() {
 	}
 
 	fmt.Printf("DBConn: %v", conn)
-	conn.AutoMigrate(&Books{})
+
+	if err := conn.AutoMigrate(&Books{}); err != nil {
+		log.Printf("Error Migrating DB: %v", err.Error())
+	}
 
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
@@ -127,8 +130,46 @@ func main() {
 		} else {
 			log.Printf("%d record(s) found in DB", entries.RowsAffected)
 			c.JSON(http.StatusOK, gin.H{
-				"data": entries,
+				"data": allbooks,
 			})
+		}
+	})
+
+	router.GET("/clean", func(c *gin.Context) {
+		// conn.Exec("DELETE FROM books")
+		r := conn.Where("1 = 1").Delete(&Books{})
+		if r.RowsAffected == 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status": "Internal server Error",
+				"data":   "Something went wrong when deleting All Books",
+			})
+		}
+	})
+
+	router.GET("/clean/:id", func(c *gin.Context) {
+		bookID := c.Params.ByName("id")
+		var book = Books{}
+		r := conn.Where("ID = ?", bookID).First(&book)
+		if r.RowsAffected == 0 {
+			log.Printf("No book found with ID %v", bookID)
+			c.JSON(http.StatusNotFound, gin.H{
+				"status": "Not Found",
+				"data":   "No book with ID " + bookID + " was found in DB",
+			})
+		} else {
+			r := conn.Delete(&book, bookID)
+			if r.RowsAffected == 0 {
+				log.Printf("Book with ID %v was not deleted from DB", bookID)
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"status": "Internal Server Error",
+					"data":   "Something went wrong when deleting Book with ID " + bookID,
+				})
+			} else {
+				c.JSON(http.StatusOK, gin.H{
+					"status": "OK",
+					"data":   "Book with ID " + bookID + " was successfully deleted",
+				})
+			}
 		}
 	})
 
