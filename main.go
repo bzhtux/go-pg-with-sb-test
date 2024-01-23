@@ -36,7 +36,7 @@ type Config struct {
 	}
 }
 
-type Books struct {
+type Book struct {
 	*gorm.Model
 	ID     uint   `gorm:"index;unique"`
 	Title  string `gorm:"unique;primaryKey" json:"title" binding:"required"`
@@ -79,7 +79,7 @@ func main() {
 
 	fmt.Printf("DBConn: %v", conn)
 
-	if err := conn.AutoMigrate(&Books{}); err != nil {
+	if err := conn.AutoMigrate(&Book{}); err != nil {
 		log.Printf("Error Migrating DB: %v", err.Error())
 	}
 
@@ -95,12 +95,12 @@ func main() {
 
 	router.GET("/add", func(c *gin.Context) {
 		// New DB entry
-		newbook := Books{
+		newbook := Book{
 			Title:  "The Hitchhiker's Guide to the Galaxy",
 			Author: "Douglas Adams",
 		}
 
-		var book = Books{}
+		var book = Book{}
 
 		// Ensure entry doesn't exist yet
 		entry := conn.Where("Title = ?", newbook.Title).First(&book)
@@ -123,12 +123,12 @@ func main() {
 
 	router.GET("/add2", func(c *gin.Context) {
 		// New DB entry
-		newbook2 := Books{
+		newbook2 := Book{
 			Title:  "Alice's Adventures in Wonderland",
 			Author: "Lewis Carroll",
 		}
 
-		var book2 = Books{}
+		var book2 = Book{}
 
 		// Ensure entry doesn't exist yet
 		entry2 := conn.Where("Title = ?", newbook2.Title).First(&book2)
@@ -150,26 +150,29 @@ func main() {
 	})
 
 	router.GET("/list", func(c *gin.Context) {
-		var allbooks []Books
-		entries := conn.Find(&allbooks)
-		log.Printf("RowsAffected: %v", entries.RowsAffected)
-		log.Printf("Entrie: %v", entries)
-		if entries.RowsAffected == 0 {
-			log.Printf("No entry were found in DB.")
+		var allbooks []Book
+		r := conn.Find(&allbooks)
+		// log.Printf("RowsAffected: %v", r.RowsAffected)
+		// log.Printf("Entrie: %v", r)
+		if r.RowsAffected == 0 {
+
 			c.JSON(http.StatusNotFound, gin.H{
 				"status": "Not Found",
 				"data":   "No record found in DB",
 			})
+			log.Printf("No entry were found in DB.")
 		} else {
-			log.Printf("%d record(s) found in DB", entries.RowsAffected)
+
 			c.JSON(http.StatusOK, gin.H{
 				"data": allbooks,
 			})
+			log.Printf("%d record(s) found in DB", r.RowsAffected)
 		}
 	})
 
 	router.GET("/clean", func(c *gin.Context) {
-		r := conn.Where("1 = 1").Delete(&Books{})
+		// r := conn.Where("1 = 1").Delete(&Book{})
+		r := conn.Exec("DELETE FROM books")
 		if r.RowsAffected == 0 {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status": "Internal server Error",
@@ -180,7 +183,7 @@ func main() {
 
 	router.GET("/clean/:id", func(c *gin.Context) {
 		bookID := c.Params.ByName("id")
-		var book = Books{}
+		var book = Book{}
 		r := conn.Where("ID = ?", bookID).First(&book)
 		if r.RowsAffected == 0 {
 			log.Printf("No book found with ID %v", bookID)
