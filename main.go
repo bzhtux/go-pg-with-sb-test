@@ -83,7 +83,14 @@ func main() {
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 
-	router.POST("/add", func(c *gin.Context) {
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "OK",
+			"data":   "Hello TAP !",
+		})
+	})
+
+	router.GET("/add", func(c *gin.Context) {
 		// New DB entry
 		newbook := Books{
 			Title:  "The Hitchhiker's Guide to the Galaxy",
