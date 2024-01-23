@@ -1,5 +1,5 @@
 # builder
-FROM golang:alpine AS build-env
+FROM harbor.h2o-2-22354.h2o.vmware.com/library/golang:alpine AS build-env
 LABEL maintainer="Yannick Foeillet <bzhtux@gmail.com>"
 
 # wokeignore:rule=he/him/his
