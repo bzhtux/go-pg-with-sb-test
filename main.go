@@ -100,12 +100,10 @@ func main() {
 			Author: "Douglas Adams",
 		}
 
-		var book = Book{}
-
 		// Ensure entry doesn't exist yet
-		entry := conn.Where("Title = ?", newbook.Title).First(&book)
+		entry := conn.Where("Title = ?", newbook.Title)
 		log.Printf("entry.Error: %v", entry.Error)
-		if entry.RowsAffected != 0 || entry.Error != nil || book.Author != "nil" {
+		if entry.RowsAffected != 0 {
 			log.Printf("Book %s already exists in DB", newbook.Title)
 			c.JSON(http.StatusConflict, gin.H{
 				"status": "Conflict",
@@ -128,12 +126,10 @@ func main() {
 			Author: "Lewis Carroll",
 		}
 
-		var book2 = Book{}
-
 		// Ensure entry doesn't exist yet
-		entry2 := conn.Where("Title = ?", newbook2.Title).First(&book2)
+		entry2 := conn.Where("Title = ?", newbook2.Title)
 		log.Printf("entry.Error: %v", entry2.Error)
-		if entry2.RowsAffected != 0 || entry2.Error != nil || book2.Author != "nil" {
+		if entry2.RowsAffected != 0 {
 			log.Printf("Book %s already exists in DB", newbook2.Title)
 			c.JSON(http.StatusConflict, gin.H{
 				"status": "Conflict",
