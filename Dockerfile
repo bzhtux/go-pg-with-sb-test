@@ -13,7 +13,7 @@ RUN go build -o gopg main.go
 
 
 # final image
-FROM alpine
+FROM harbor.h2o-2-22354.h2o.vmware.com/library/alpine
 LABEL maintainer="Yannick Foeillet <bzhtux@gmail.com>"
 
 # wokeignore:rule=he/him/his
