@@ -102,7 +102,7 @@ func main() {
 
 		// Ensure entry doesn't exist yet
 		entry := conn.Where("Title = ?", newbook.Title)
-		if entry.RowsAffected != 0 {
+		if entry.RowsAffected != 0 || entry.Error != nil {
 			log.Printf("Book %s already exists in DB", newbook.Title)
 			c.JSON(http.StatusConflict, gin.H{
 				"status": "Conflict",
@@ -136,7 +136,6 @@ func main() {
 	})
 
 	router.GET("/clean", func(c *gin.Context) {
-		// conn.Exec("DELETE FROM books")
 		r := conn.Where("1 = 1").Delete(&Books{})
 		if r.RowsAffected == 0 {
 			c.JSON(http.StatusInternalServerError, gin.H{
