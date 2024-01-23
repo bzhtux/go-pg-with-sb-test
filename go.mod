@@ -3,7 +3,7 @@ module github.com/bzhtux/go-pg-with-sb-test
 go 1.21.3
 
 require (
-	github.com/bzhtux/servicebinding v1.0.3
+	github.com/bzhtux/servicebinding v1.0.4
 	github.com/jinzhu/copier v0.4.0
 	github.com/onsi/ginkgo/v2 v2.15.0
 	github.com/onsi/gomega v1.31.1
