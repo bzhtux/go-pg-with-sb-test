@@ -121,9 +121,39 @@ func main() {
 		}
 	})
 
+	router.GET("/add2", func(c *gin.Context) {
+		// New DB entry
+		newbook := Books{
+			Title:  "Alice's Adventures in Wonderland",
+			Author: "Lewis Carroll",
+		}
+
+		var book = Books{}
+
+		// Ensure entry doesn't exist yet
+		entry := conn.Where("Title = ?", newbook.Title).First(&book)
+		log.Printf("entry.Error: %v", entry.Error)
+		if entry.RowsAffected != 0 || entry.Error != nil || book.Author != "nil" {
+			log.Printf("Book %s already exists in DB", newbook.Title)
+			c.JSON(http.StatusConflict, gin.H{
+				"status": "Conflict",
+				"data":   "Entry already exists in DB",
+			})
+		} else {
+			conn.Create(&newbook)
+			log.Printf("New book %s by %s has been recorded in DB", newbook.Title, newbook.Author)
+			c.JSON(http.StatusOK, gin.H{
+				"status": "OK",
+				"data":   "New book recorded",
+			})
+		}
+	})
+
 	router.GET("/list", func(c *gin.Context) {
 		var allbooks []Books
 		entries := conn.Find(&allbooks)
+		log.Printf("RowsAffected: %v", entries.RowsAffected)
+		log.Printf("Entrie: %v", entries)
 		if entries.RowsAffected == 0 {
 			log.Printf("No entry were found in DB.")
 			c.JSON(http.StatusNotFound, gin.H{
