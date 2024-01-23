@@ -174,6 +174,11 @@ func main() {
 				"status": "Internal server Error",
 				"data":   "Something went wrong when deleting All Books",
 			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": "OK",
+				"data": "All records have been deleted"
+			})
 		}
 	})
 
