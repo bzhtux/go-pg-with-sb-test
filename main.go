@@ -38,8 +38,8 @@ type Config struct {
 
 type Books struct {
 	*gorm.Model
-	ID     uint   `gorm:"index"`
-	Title  string `gorm:"uniq,primaryKey" json:"title" binding:"required"`
+	ID     uint   `gorm:"index;unique"`
+	Title  string `gorm:"unique;primaryKey" json:"title" binding:"required"`
 	Author string `gorm:"not null" json:"author" binding:"required"`
 }
 
