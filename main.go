@@ -177,7 +177,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"status": "OK",
-				"data": "All records have been deleted"
+				"data":   "All records have been deleted",
 			})
 		}
 	})
