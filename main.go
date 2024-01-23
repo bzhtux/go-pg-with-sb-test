@@ -33,20 +33,6 @@ type Config struct {
 	}
 }
 
-// type BindingsSpec struct {
-// 	Host         string   `mapstructure:"host"`
-// 	Port         uint16   `mapstructure:"port"`
-// 	Uri          string   `mapstructure:"uri"`
-// 	Username     string   `mapstructure:"username"`
-// 	Password     string   `mapstructure:"password"`
-// 	Database     string   `mapstructure:"database"`
-// 	SSL          bool     `mapstructure:"ssl"`
-// 	Provider     string   `mapstructure:"provider"`
-// 	Certificates []string `mapstructure:"certificates"`
-// 	PrivateKey   string   `mapstructure:"privatekey"`
-// 	Type         string   `mapstructure:"type"`
-// }
-
 type Books struct {
 	*gorm.Model
 	ID     uint   `gorm:"primaryKey"`
