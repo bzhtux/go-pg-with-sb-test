@@ -194,7 +194,7 @@ func main() {
 			})
 		} else {
 			log.Printf("Deleting book: %v", book.Title)
-			del := conn.Delete(&Book{}, book.Title)
+			del := conn.Where("ID = ?", delbookID).Delete(&Book{})
 			if del.RowsAffected == 0 {
 				log.Printf("Book with ID %v was not deleted from DB", delbookID)
 				c.JSON(http.StatusInternalServerError, gin.H{
