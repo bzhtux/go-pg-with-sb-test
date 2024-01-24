@@ -182,28 +182,29 @@ func main() {
 		}
 	})
 
-	router.GET("/clean/:id", func(c *gin.Context) {
-		bookID := c.Params.ByName("id")
+	router.GET("/clean/:bookid", func(c *gin.Context) {
+		delbookID := c.Params.ByName("bookid")
 		var book = Book{}
-		r := conn.Where("ID = ?", bookID).First(&book)
-		if r.RowsAffected == 0 {
-			log.Printf("No book found with ID %v", bookID)
+		r3 := conn.Where("ID = ?", delbookID).First(&book)
+		if r3.RowsAffected == 0 {
+			log.Printf("No book found with ID %v", delbookID)
 			c.JSON(http.StatusNotFound, gin.H{
 				"status": "Not Found",
-				"data":   "No book with ID " + bookID + " was found in DB",
+				"data":   "No book with ID " + delbookID + " was found in DB",
 			})
 		} else {
-			r := conn.Delete(&book, bookID)
-			if r.RowsAffected == 0 {
-				log.Printf("Book with ID %v was not deleted from DB", bookID)
+			log.Printf("Deleting book: %v", book.Title)
+			del := conn.Delete(&book, delbookID)
+			if del.RowsAffected == 0 {
+				log.Printf("Book with ID %v was not deleted from DB", delbookID)
 				c.JSON(http.StatusInternalServerError, gin.H{
 					"status": "Internal Server Error",
-					"data":   "Something went wrong when deleting Book with ID " + bookID,
+					"data":   "Something went wrong when deleting Book with ID " + delbookID,
 				})
 			} else {
 				c.JSON(http.StatusOK, gin.H{
 					"status": "OK",
-					"data":   "Book with ID " + bookID + " was successfully deleted",
+					"data":   "Book with ID " + delbookID + " was successfully deleted",
 				})
 			}
 		}
