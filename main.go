@@ -148,8 +148,6 @@ func main() {
 	router.GET("/list", func(c *gin.Context) {
 		var allbooks []Book
 		r := conn.Find(&allbooks)
-		// log.Printf("RowsAffected: %v", r.RowsAffected)
-		// log.Printf("Entrie: %v", r)
 		if r.RowsAffected == 0 {
 
 			c.JSON(http.StatusNotFound, gin.H{
