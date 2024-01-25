@@ -1,7 +1,7 @@
 # builder
 # FROM harbor.h2o-2-22354.h2o.vmware.com/library/golang:alpine AS build-env
 # FROM golang:alpine AS build-env
-FROM golang AS build-env
+FROM ghcr.io/bzhtux/golang:latest AS build-env
 LABEL maintainer="Yannick Foeillet <bzhtux@gmail.com>"
 
 WORKDIR /app
