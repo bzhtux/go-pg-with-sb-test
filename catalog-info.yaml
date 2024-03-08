@@ -6,5 +6,5 @@ metadata:
     github.com/project-slug: bzhtux/go-pg-with-sb-test
 spec:
   type: other
-  lifecycle: unknown
-  owner: bzhtux
+  lifecycle: production
+  owner: Default Team
