@@ -6,6 +6,11 @@ metadata:
     github.com/project-slug: bzhtux/go-pg-with-sb-test
     'backstage.io/techdocs-ref': dir:.
   description: A sample catalog for go-pg app
+  tags:
+    - Golang
+    - PostgreSQL
+    - web
+    - tanzu
 spec:
   type: service
   lifecycle: production
