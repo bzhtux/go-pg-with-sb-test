@@ -4,6 +4,8 @@ metadata:
   name: go-pg-with-sb-test
   annotations:
     github.com/project-slug: bzhtux/go-pg-with-sb-test
+    'backstage.io/techdocs-ref': dir:.
+  description: A sample catalog for go-pg app
 spec:
   type: service
   lifecycle: production
